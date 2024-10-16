@@ -31,7 +31,7 @@ namespace API.Migrations
                     b.Property<decimal>("Balance")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -59,7 +59,9 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Domain.User", null)
                         .WithMany("Accounts")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("API.Domain.User", b =>
