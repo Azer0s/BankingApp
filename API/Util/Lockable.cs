@@ -6,12 +6,12 @@ public abstract class Lockable
     {
         var id = GetType().GetProperty("Id")?.GetValue(this) ?? throw new Exception("Id field not found");
         var typeName = !GetType().Name.EndsWith("s") ? GetType().Name + "s" : GetType().Name;
-        
-        if (id is Guid guid)
+
+        return (id switch
         {
-            return (typeName, $"uuid('{guid}')");
-        }
-        
-        return (typeName, id.ToString())!;
+            Guid guid => (typeName, $"uuid('{guid}')"),
+            string str => (typeName, $"'{str}'"),
+            _ => (typeName, id.ToString())!
+        })!;
     }
 }
