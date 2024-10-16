@@ -5,5 +5,10 @@ My submission for the Radency Code Challenge.
 
 ```sh
 docker compose up -d
-dotnet run --project API/API.csproj
+cd API
+
+docker ef database update
+dotnet run
 ```
+
+You can now create a user in Postgres and use the API.
