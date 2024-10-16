@@ -16,8 +16,8 @@ public class TransactionServiceImpl(BankingContext context): ITransactionService
 #pragma warning disable EF1002
         foreach (var dependency in dependencies)
         {
-            var (lockOnTable, lockOnId) = dependency.AcquireLock();
-            await context.Database.ExecuteSqlRawAsync($"SELECT * FROM \"{lockOnTable}\" WHERE \"Id\" = {lockOnId} FOR UPDATE NOWAIT;");
+            var (lockOnTable, idField, lockOnId) = dependency.AcquireLock();
+            await context.Database.ExecuteSqlRawAsync($"SELECT * FROM \"{lockOnTable}\" WHERE \"{idField}\" = {lockOnId} FOR UPDATE NOWAIT;");
         }
 #pragma warning restore EF1002
         
