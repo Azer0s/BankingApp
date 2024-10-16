@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API.Util;
 
+// This is basically a `derive` to get the table name and id field of a class
 public abstract class Lockable
 {
     private static readonly Dictionary<string, (string tableName, string idField)> TableNames = new();

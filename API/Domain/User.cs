@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using API.Util;
+using API.Util.Stereotype;
 
 namespace API.Domain;
 
-public class User(Guid id) : Lockable
+public class User(Guid id) : DomainObject
 {
     [Key]
     public Guid Id { get; set; } = id;

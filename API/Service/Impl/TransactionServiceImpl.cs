@@ -2,13 +2,15 @@ using System.Data;
 using API.Domain;
 using API.Repository;
 using API.Util;
+using API.Util.Stereotype;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Service.Impl;
 
 public class TransactionServiceImpl(BankingContext context): ITransactionService
 {
-    public async Task<Option<IError>> DoTransactionAsync(List<Lockable> dependencies, Func<Task<Option<IError>>> action)
+    public async Task<Option<IError>> DoTransactionAsync(List<DomainObject> dependencies,
+        Func<Task<Option<IError>>> action)
     {
         await using var transaction = await context.Database.BeginTransactionAsync(IsolationLevel.Serializable);
 
@@ -32,7 +34,7 @@ public class TransactionServiceImpl(BankingContext context): ITransactionService
         return Option<IError>.None();
     }
     
-    public Option<IError> DoTransaction(List<Lockable> dependencies, Func<Task<Option<IError>>> action)
+    public Option<IError> DoTransaction(List<DomainObject> dependencies, Func<Task<Option<IError>>> action)
     {
         return Task.Run(() => DoTransactionAsync(dependencies, action)).Result;
     }

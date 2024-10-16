@@ -4,6 +4,7 @@ using API.Repository.Impl;
 using API.Service;
 using API.Service.Impl;
 using API.Util;
+using API.Util.Stereotype;
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
@@ -32,10 +33,10 @@ public class TestAccountCreate
         
         var transactionServiceMock = new Mock<ITransactionService>();
         transactionServiceMock
-            .Setup(t => t.DoTransaction(It.IsAny<List<Lockable>>(), It.IsAny<Func<Task<Option<IError>>>>()))
-            .Returns(new Func<List<Lockable>, Func<Task<Option<IError>>>, Option<IError>>((_, f) => Task.Run(async () => await f()).Result));
-        transactionServiceMock.Setup(t => t.DoTransactionAsync(It.IsAny<List<Lockable>>(), It.IsAny<Func<Task<Option<IError>>>>()))
-            .Returns(new Func<List<Lockable>, Func<Task<Option<IError>>>, Task<Option<IError>> >((_, f) => f()));
+            .Setup(t => t.DoTransaction(It.IsAny<List<DomainObject>>(), It.IsAny<Func<Task<Option<IError>>>>()))
+            .Returns(new Func<List<DomainObject>, Func<Task<Option<IError>>>, Option<IError>>((_, f) => Task.Run(async () => await f()).Result));
+        transactionServiceMock.Setup(t => t.DoTransactionAsync(It.IsAny<List<DomainObject>>(), It.IsAny<Func<Task<Option<IError>>>>()))
+            .Returns(new Func<List<DomainObject>, Func<Task<Option<IError>>>, Task<Option<IError>> >((_, f) => f()));
         
         _userService = new UserServiceImpl(userRepository, transactionServiceMock.Object);
         _accountService = new AccountServiceImpl(accountRepository, userRepository, transactionServiceMock.Object);
