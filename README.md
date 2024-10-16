@@ -1,5 +1,5 @@
 # Banking App
-My submission for the Radency Code Challenge.
+My submission for the Radancy Code Challenge.
 
 ## Running 
 
