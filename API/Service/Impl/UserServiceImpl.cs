@@ -22,7 +22,7 @@ public class UserServiceImpl(IUserRepository userRepository, ITransactionService
     {
         return (await GetUserAsync(id)).MapOrError<User>(u =>
         {
-            var result = transactionService.DoTransaction(async () =>
+            var result = transactionService.DoTransaction([u], async () =>
             {
                 if (u.PersonalBalance < 100.0m)
                 {
@@ -50,7 +50,7 @@ public class UserServiceImpl(IUserRepository userRepository, ITransactionService
                 return Result<User>.Error(new NotFoundError());
             }
             
-            var result = transactionService.DoTransaction(async () =>
+            var result = transactionService.DoTransaction([u, account], async () =>
             {
                 u.PersonalBalance += account.Balance;
                 await userRepository.DeleteAccountForUserAsync(u, account);

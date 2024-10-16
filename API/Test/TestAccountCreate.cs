@@ -32,10 +32,10 @@ public class TestAccountCreate
         
         var transactionServiceMock = new Mock<ITransactionService>();
         transactionServiceMock
-            .Setup(t => t.DoTransaction(It.IsAny<Func<Task<Option<IError>>>>()))
-            .Returns(new Func<Func<Task<Option<IError>>>, Option<IError>>(f => Task.Run(async () => await f()).Result));
-        transactionServiceMock.Setup(t => t.DoTransactionAsync(It.IsAny<Func<Task<Option<IError>>>>()))
-            .Returns(new Func<Func<Task<Option<IError>>>, Task<Option<IError>> >(f => f()));
+            .Setup(t => t.DoTransaction(It.IsAny<List<Lockable>>(), It.IsAny<Func<Task<Option<IError>>>>()))
+            .Returns(new Func<List<Lockable>, Func<Task<Option<IError>>>, Option<IError>>((_, f) => Task.Run(async () => await f()).Result));
+        transactionServiceMock.Setup(t => t.DoTransactionAsync(It.IsAny<List<Lockable>>(), It.IsAny<Func<Task<Option<IError>>>>()))
+            .Returns(new Func<List<Lockable>, Func<Task<Option<IError>>>, Task<Option<IError>> >((_, f) => f()));
         
         _userService = new UserServiceImpl(userRepository, transactionServiceMock.Object);
         _accountService = new AccountServiceImpl(accountRepository, userRepository, transactionServiceMock.Object);
@@ -171,7 +171,7 @@ public class TestAccountCreate
         
         // total balance is 1600 + 200 = 1800
         // 90% of 1800 is 1620 so 1621 should be an error
-        result = await _accountService!.Withdraw(withdrawAccount.ToString(), 991);
+        result = await _accountService!.Withdraw(withdrawAccount.ToString(), 1621);
         ClassicAssert.IsTrue(result.IsError);
     }
 }

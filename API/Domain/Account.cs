@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using API.Util;
 using Newtonsoft.Json;
 
 namespace API.Domain;
 
-public class Account(Guid id)
+public class Account(Guid id) : Lockable
 {
     [Key]
     public Guid Id { get; set; } = id;

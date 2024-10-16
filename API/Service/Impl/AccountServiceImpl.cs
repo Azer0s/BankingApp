@@ -22,7 +22,8 @@ public class AccountServiceImpl(IAccountRepository accountRepository, IUserRepos
     {
         return (await GetAccountAsync(id)).MapOrError(a =>
         {
-            var result = transactionService.DoTransaction(async () =>
+            var user = userRepository.GetUserAsync(a.UserId).Result.Unwrap();
+            var result = transactionService.DoTransaction([a, user], async () =>
             {
                 switch (a.Balance - amount)
                 {
@@ -32,8 +33,7 @@ public class AccountServiceImpl(IAccountRepository accountRepository, IUserRepos
                         return Option<IError>.Some(new InvalidTransactionError("withdrawal amount cannot reduce balance below 100$"));
                 }
 
-                var user = (await userRepository.GetUserAsync(a.UserId)).Unwrap();
-                var totalBalance = user.Accounts.Aggregate(0m, (_, account) => account.Balance);
+                var totalBalance = user.Accounts.ToList().Aggregate(0m, (acc, account) => account.Balance + acc);
 
                 if (amount > 0.9m * totalBalance)
                 {
@@ -58,7 +58,7 @@ public class AccountServiceImpl(IAccountRepository accountRepository, IUserRepos
         
         return (await GetAccountAsync(id)).MapOrError(a =>
         {
-            var result = transactionService.DoTransaction(async () =>
+            var result = transactionService.DoTransaction([a], async () =>
             {
                 a.Balance += amount;
                 await accountRepository.UpdateAccountAsync(a);
