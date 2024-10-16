@@ -2,17 +2,17 @@ using API.Domain;
 
 namespace API.Util;
 
-public class Option<T>
+public readonly struct Option<T>
 {
     private readonly T? _value;
     
     private Option(T? value)
     {
-        this._value = value;
+        _value = value;
     }
     
-    public static Option<T> Some(T value) => new Option<T>(value);
-    public static Option<T> None() => new Option<T>(default);
+    public static Option<T> Some(T value) => new(value);
+    public static Option<T> None() => new(default);
     
     public bool IsSome => _value != null;
     public bool IsNone => _value == null;

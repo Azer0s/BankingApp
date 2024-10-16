@@ -1,6 +1,6 @@
 namespace API.Util;
 
-public class Result<T>(T? value, IError error)
+public readonly struct Result<T>(T? value, IError error)
     where T : class
 {
     private T? Value { get; } = value;
